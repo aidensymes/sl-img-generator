@@ -7,7 +7,7 @@ The hand-made shading is handled through p5.brush by Alejandro Campos. For more 
 ### Using the generator
 The generator accepts an image URL (Unsplash.com is a good source) and renders it in a unique hand-made bitmap style. As you edit, your settings will be saved into the URL.
 
-#### Image Options
+### Image Options
 - *Contrast:* Increase for starker differences between light and dark areas.
 - *Light Threshold:* The upper limit at which a tile is considered pure white. Decrease lighten image.
 - *Dark Threshold:* The lower limit at which a tile is considered pure black. Increase to darken image.
