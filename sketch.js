@@ -46,18 +46,19 @@ async function setup() {
   exportWidth.option("1440 pixels", 1440);
   exportWidth.option("1920 pixels", 1920);
   exportWidth.option("2048 pixels", 2048);
-  exportWidth.selected("1080 pixels");
+  exportWidth.selected(getParam("exportWidth") ?? "1080 pixels");
+  exportWidth.changed(() => {
+    setParam("exportWidth", exportWidth.value());
+  });
   let exportWidthLabel = createP("Export Width");
 
   // IMAGE
   imageURL = createInput(
-    getParam("imageURL") ??
-      "https://images.unsplash.com/photo-1539664030485-a936c7d29c6e?q=80&w=1160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    "https://images.unsplash.com/photo-1539664030485-a936c7d29c6e?q=80&w=1160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   );
   imgPreview = createImg(imageURL.value(), "");
   imageURL.changed(() => {
     imgPreview.elt.src = imageURL.value();
-    url.searchParams.set("imageURL", imageURL);
     setButton("render");
   });
   imageURLLabel = createP("Image URL");
@@ -81,7 +82,7 @@ async function setup() {
 
   showHatch = createCheckbox(
     "Show Hatching?",
-    getParam("showHatch") === "false" ? false : true
+    getParam("showHatch") === "false" ? false : true,
   );
   showHatch.changed(() => {
     setParam("showHatch", showHatch.checked());
@@ -99,7 +100,7 @@ async function setup() {
   hatchWeight = createSlider(
     1,
     15,
-    getParam("hatchWeight") ? +getParam("hatchWeight") : 5
+    getParam("hatchWeight") ? +getParam("hatchWeight") : 5,
   );
   let hatchWeightLabel = createP(`Hatch Weight: ${hatchWeight.value()}`);
   hatchWeight.changed(() => {
@@ -111,7 +112,7 @@ async function setup() {
   hatchSpacing = createSlider(
     1,
     40,
-    getParam("hatchSpacing") ? +getParam("hatchSpacing") : 20
+    getParam("hatchSpacing") ? +getParam("hatchSpacing") : 20,
   );
   let hatchSpacingLabel = createP(`Hatch Spacing: ${hatchSpacing.value()}`);
   hatchSpacing.changed(() => {
@@ -123,10 +124,10 @@ async function setup() {
   hatchAngle = createSlider(
     0,
     3,
-    getParam("hatchAngle") ? +getParam("hatchAngle") : 0
+    getParam("hatchAngle") ? +getParam("hatchAngle") : 0,
   );
   let hatchAngleLabel = createP(
-    `Hatch Angle: ${45 + hatchAngle.value() * 90}°`
+    `Hatch Angle: ${45 + hatchAngle.value() * 90}°`,
   );
   hatchAngle.changed(() => {
     setParam("hatchAngle", hatchAngle.value());
@@ -137,20 +138,37 @@ async function setup() {
   showHideHatchOptions();
 
   // BACKGROUND
-  showBackground = createCheckbox("Show Background?", true);
-  showBackground.changed(() => {
-    setButton("render");
+  function toggleBackgroundOptions() {
     setInputState(backgroundColor, showBackground.checked());
     setInputState(backgroundColorLabel, showBackground.checked());
+  }
+
+  showBackground = createCheckbox(
+    "Show Background?",
+    getParam("showBackground") === "false" ? false : true,
+  );
+  showBackground.changed(() => {
+    setParam("showBackground", showBackground.checked());
+    setButton("render");
+    toggleBackgroundOptions();
   });
 
-  backgroundColor = createColorPicker("#F0F0EC");
+  backgroundColor = createColorPicker(getParam("backgroundColor") ?? "#F0F0EC");
   let backgroundColorLabel = createP("Background Color");
-  backgroundColor.changed(() => setButton("render"));
+  backgroundColor.changed(() => {
+    setParam("backgroundColor", backgroundColor.value());
+    setButton("render");
+  });
+
+  toggleBackgroundOptions();
 
   // PAINT
-  showPaint = createCheckbox("Show Paint?", true);
+  showPaint = createCheckbox(
+    "Show Paint?",
+    getParam("showPaint") === "false" ? false : true,
+  );
   showPaint.changed(() => {
+    setParam("showPaint", showPaint.checked());
     setButton("render");
     setInputState(paintColor, showPaint.checked());
     setInputState(paintColorLabel, showPaint.checked());
@@ -158,52 +176,85 @@ async function setup() {
     setInputState(paintSizeLabel, showPaint.checked());
   });
 
-  paintColor = createColorPicker("#ABAD6C");
+  paintColor = createColorPicker(getParam("paintColor") ?? "#ABAD6C");
   let paintColorLabel = createP("Paint Color");
-  paintColor.changed(() => setButton("render"));
+  paintColor.changed(() => {
+    setParam("paintColor", paintColor.value());
+    setButton("render");
+  });
 
-  paintSize = createSlider(1, 8, 2);
+  paintSize = createSlider(
+    1,
+    8,
+    getParam("paintSize") ? +getParam("paintSize") : 2,
+  );
   let paintSizeLabel = createP(`Paint Size: ${paintSize.value()}`);
   paintSize.changed(() => {
+    setParam("paintSize", paintSize.value());
     setButton("render");
     paintSizeLabel.html(`Paint Size: ${paintSize.value()}`);
   });
 
   // TILE DENSITY
-  density = createSlider(1, 200, 60);
+  density = createSlider(
+    1,
+    200,
+    getParam("density") ? +getParam("density") : 60,
+  );
   let densityLabel = createP(`Density: ${density.value()} Tiles`);
   density.changed(() => {
+    setParam("density", density.value());
     setButton("render");
     densityLabel.html(`Density: ${density.value()} Tiles`);
   });
 
   // IMAGE ADJUSTMENTS
-  darkThreshold = createSlider(0, 255, 0);
+  darkThreshold = createSlider(
+    0,
+    255,
+    getParam("darkThreshold") ? +getParam("darkThreshold") : 0,
+  );
   let darkThresholdLabel = createP(`Dark Threshold: ${darkThreshold.value()}`);
   darkThreshold.changed(() => {
+    setParam("darkThreshold", darkThreshold.value());
     setButton("render");
     darkThresholdLabel.html(`Dark Threshold: ${darkThreshold.value()}`);
   });
 
-  lightThreshold = createSlider(0, 255, 255);
+  lightThreshold = createSlider(
+    0,
+    255,
+    getParam("lightThreshold") ? +getParam("lightThreshold") : 255,
+  );
   let lightThresholdLabel = createP(
-    `Light Threshold: ${lightThreshold.value()}`
+    `Light Threshold: ${lightThreshold.value()}`,
   );
   lightThreshold.changed(() => {
+    setParam("lightThreshold", lightThreshold.value());
     setButton("render");
     lightThresholdLabel.html(`Light Threshold: ${lightThreshold.value()}`);
   });
 
-  whiteBalance = createSlider(0, 255, 255);
+  whiteBalance = createSlider(
+    0,
+    255,
+    getParam("whiteBalance") ? +getParam("whiteBalance") : 255,
+  );
   let whiteBalanceLabel = createP(`White Balance: ${whiteBalance.value()}`);
   whiteBalance.changed(() => {
+    setParam("whiteBalance", whiteBalance.value());
     setButton("render");
     whiteBalanceLabel.html(`White Balance: ${whiteBalance.value()}`);
   });
 
-  contrast = createSlider(0, 255, 40);
+  contrast = createSlider(
+    0,
+    255,
+    getParam("contrast") ? +getParam("contrast") : 40,
+  );
   let contrastLabel = createP(`Contrast: ${contrast.value()}`);
   contrast.changed(() => {
+    setParam("contrast", contrast.value());
     setButton("render");
     contrastLabel.html(`Contrast: ${contrast.value()}`);
   });
@@ -393,7 +444,7 @@ function draw() {
             darkThreshold.value(),
             lightThreshold.value(),
             tileSize * paintSize.value(),
-            0
+            0,
           );
 
           if (sizedTile > 1) {
@@ -430,7 +481,7 @@ function draw() {
             darkThreshold.value(),
             lightThreshold.value(),
             tileSize * 0.92,
-            tileSize * 0.98
+            tileSize * 0.98,
           );
 
           if (sizedTile > 1) {
@@ -468,8 +519,8 @@ class Tile {
             darkThreshold.value(),
             lightThreshold.value(),
             250,
-            20
-          )
+            20,
+          ),
         ); // this is the opacity
         brush.fillBleed(random(0.1, 0.2), "out");
         brush.fillTexture(0.4, 1);
@@ -485,7 +536,7 @@ class Tile {
         brush.hatchStyle(
           "customBrush",
           hatchColor.value(),
-          adjustedHatchWeight
+          adjustedHatchWeight,
         );
         brush.hatch(
           map(
@@ -493,13 +544,13 @@ class Tile {
             darkThreshold.value(),
             lightThreshold.value(),
             minHatchSpace,
-            maxHatchSpace
+            maxHatchSpace,
           ), // This is distance between lines
           random(
             45 + hatchAngle.value() * 90 - 5,
-            45 + hatchAngle.value() * 90 + 5
+            45 + hatchAngle.value() * 90 + 5,
           ), // This is angle in degrees
-          { rand: 0, continuous: false, gradient: false }
+          { rand: 0, continuous: false, gradient: false },
         );
 
         brush.rect(this.pos.x, this.pos.y, this.size, this.size, "center");
@@ -517,16 +568,13 @@ function saveDrawing() {
     `sauceLabs_${now.getFullYear()}.${now
       .getMonth()
       .toString()
-      .padStart(
-        2,
-        "0"
-      )}.${now.getDate()}_at_${now
+      .padStart(2, "0")}.${now.getDate()}_at_${now
       .getHours()
       .toString()
       .padStart(2, "0")}.${now
       .getMinutes()
       .toString()
-      .padStart(2, "0")}.${now.getSeconds().toString().padStart(2, "0")}.png`
+      .padStart(2, "0")}.${now.getSeconds().toString().padStart(2, "0")}.png`,
   );
 }
 
