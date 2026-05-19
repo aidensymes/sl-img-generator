@@ -67,13 +67,7 @@ async function setup() {
   setButton("render");
 
   // HATCH
-  showHatch = createCheckbox(
-    "Show Hatching?",
-    getParam("showHatch") === "false" ? false : true
-  );
-  showHatch.changed(() => {
-    setParam("showHatch", showHatch.checked());
-
+  function showHideHatchOptions() {
     // Show/hide hatch options
     setInputState(hatchColor, showHatch.checked());
     setInputState(hatchColorLabel, showHatch.checked());
@@ -83,39 +77,64 @@ async function setup() {
     setInputState(hatchSpacingLabel, showHatch.checked());
     setInputState(hatchAngle, showHatch.checked());
     setInputState(hatchAngleLabel, showHatch.checked());
+  }
 
+  showHatch = createCheckbox(
+    "Show Hatching?",
+    getParam("showHatch") === "false" ? false : true
+  );
+  showHatch.changed(() => {
+    setParam("showHatch", showHatch.checked());
+    showHideHatchOptions();
     setButton("render");
   });
 
   hatchColor = createColorPicker(getParam("hatchColor") ?? "#2D372D");
   let hatchColorLabel = createP("Hatch Color");
   hatchColor.changed(() => {
-    url.searchParams.set("hatchColor", hatchColor);
+    setParam("hatchColor", hatchColor.value());
     setButton("render");
   });
 
-  hatchWeight = createSlider(1, 15, 5);
+  hatchWeight = createSlider(
+    1,
+    15,
+    getParam("hatchWeight") ? +getParam("hatchWeight") : 5
+  );
   let hatchWeightLabel = createP(`Hatch Weight: ${hatchWeight.value()}`);
   hatchWeight.changed(() => {
+    setParam("hatchWeight", hatchWeight.value());
     setButton("render");
     hatchWeightLabel.html(`Hatch Weight: ${hatchWeight.value()}`);
   });
 
-  hatchSpacing = createSlider(1, 40, 20);
+  hatchSpacing = createSlider(
+    1,
+    40,
+    getParam("hatchSpacing") ? +getParam("hatchSpacing") : 20
+  );
   let hatchSpacingLabel = createP(`Hatch Spacing: ${hatchSpacing.value()}`);
   hatchSpacing.changed(() => {
+    setParam("hatchSpacing", hatchSpacing.value());
     setButton("render");
     hatchSpacingLabel.html(`Hatch Spacing: ${hatchSpacing.value()}`);
   });
 
-  hatchAngle = createSlider(0, 3, 0);
+  hatchAngle = createSlider(
+    0,
+    3,
+    getParam("hatchAngle") ? +getParam("hatchAngle") : 0
+  );
   let hatchAngleLabel = createP(
     `Hatch Angle: ${45 + hatchAngle.value() * 90}°`
   );
   hatchAngle.changed(() => {
+    setParam("hatchAngle", hatchAngle.value());
     setButton("render");
     hatchAngleLabel.html(`Hatch Angle: ${45 + hatchAngle.value() * 90}°`);
   });
+
+  showHideHatchOptions();
 
   // BACKGROUND
   showBackground = createCheckbox("Show Background?", true);
