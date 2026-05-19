@@ -1,5 +1,4 @@
 let hatchColor; // Color of hatched tiles
-
 let showPaint;
 let paintColor; // Color of painted "fill" tiles (set to "" to skip)
 let paintSize; // adjust the size of the painted "fill" tiles relative to the hatched tiles
@@ -52,10 +51,15 @@ async function setup() {
 
   // IMAGE
   imageURL = createInput(
-    "https://images.unsplash.com/photo-1539664030485-a936c7d29c6e?q=80&w=1160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    getParam("imageURL") ??
+      "https://images.unsplash.com/photo-1539664030485-a936c7d29c6e?q=80&w=1160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
   );
   imgPreview = createImg(imageURL.value(), "");
-  imageURL.changed(() => (imgPreview.elt.src = imageURL.value()));
+  imageURL.changed(() => {
+    imgPreview.elt.src = imageURL.value();
+    url.searchParams.set("imageURL", imageURL);
+    setButton("render");
+  });
   imageURLLabel = createP("Image URL");
 
   // BUTTON
@@ -63,9 +67,11 @@ async function setup() {
   setButton("render");
 
   // HATCH
-  showHatch = createCheckbox("Show Hatching?", true);
+  showHatch = createCheckbox("Show Hatching?", getParam("showHatch") ?? true);
   showHatch.changed(() => {
-    setButton("render");
+    setParam(showHatch);
+
+    // Show/hide hatch options
     setInputState(hatchColor, showHatch.checked());
     setInputState(hatchColorLabel, showHatch.checked());
     setInputState(hatchWeight, showHatch.checked());
@@ -74,11 +80,16 @@ async function setup() {
     setInputState(hatchSpacingLabel, showHatch.checked());
     setInputState(hatchAngle, showHatch.checked());
     setInputState(hatchAngleLabel, showHatch.checked());
+
+    setButton("render");
   });
 
-  hatchColor = createColorPicker("#2D372D");
+  hatchColor = createColorPicker(getParam("hatchColor") ?? "#2D372D");
   let hatchColorLabel = createP("Hatch Color");
-  hatchColor.changed(() => setButton("render"));
+  hatchColor.changed(() => {
+    url.searchParams.set("hatchColor", hatchColor);
+    setButton("render");
+  });
 
   hatchWeight = createSlider(1, 15, 5);
   let hatchWeightLabel = createP(`Hatch Weight: ${hatchWeight.value()}`);
@@ -558,4 +569,22 @@ function setInputState(input, checked) {
     input.style("opacity", "0.3");
     input.style("pointer-events", "none");
   }
+}
+
+function getParam(id) {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has(id)) {
+    return urlParams.get(id);
+  }
+}
+
+function setParam(param) {
+  const params = new URLSearchParams(window.location.search);
+  params.set("Object.keys({ param })[0]", param);
+
+  window.history.pushState(
+    {},
+    "",
+    `${window.location.pathname}?${params.toString()}`
+  );
 }
