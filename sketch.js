@@ -589,7 +589,7 @@ function saveDrawing() {
       .padStart(2, "0")}.${now
       .getMinutes()
       .toString()
-      .padStart(2, "0")}.${now.getSeconds().toString().padStart(2, "0")}.png`,
+      .padStart(2, "0")}.${now.getSeconds().toString().padStart(2, "0")}_${exportWidth.value()}px.png`,
   );
 }
 
