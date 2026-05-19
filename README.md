@@ -6,3 +6,23 @@ The hand-made shading is handled through p5.brush by Alejandro Campos. For more 
 
 ### Using the generator
 The generator accepts an image URL (Unsplash.com is a good source) and renders it in a unique hand-made bitmap style. As you edit, your settings will be saved into the URL.
+
+#### Image Options
+- *Contrast:* Increase for starker differences between light and dark areas.
+- *Light Threshold:* The upper limit at which a tile is considered pure white. Decrease lighten image.
+- *Dark Threshold:* The lower limit at which a tile is considered pure black. Increase to darken image.
+- *White Balance:* A hard cut-off at which a tile is considered pure white and not rendered. Decrease for more blank tiles.
+- *Density:* The number of tiles across the width of the image.
+
+### Hatch Options
+- *Show Hatching:* Whether or not to show the hatched pen strokes.
+- *Hatch Weight:* The width of the pen strokes.
+- *Hatch Spacing:* The width between strokes in a single tile.
+- *Hatch Angle:* The angle of the pen strokes (locked to 45°).
+
+### Paint Options
+- *Show Paint:* Whether or not to show paint spots.
+- *Paint Size:* The size of the paint spots, as a multiple of tile size. Ex: a value of 3 means paint spots are 3x larger than hatched tiles.
+
+### Background Options
+- *Show Background:* Whether or not to show the background. If you do not show the background, your download will be a transparent PNG.
