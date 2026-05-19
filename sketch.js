@@ -67,9 +67,12 @@ async function setup() {
   setButton("render");
 
   // HATCH
-  showHatch = createCheckbox("Show Hatching?", getParam("showHatch") === 'false' ? false : true);
+  showHatch = createCheckbox(
+    "Show Hatching?",
+    getParam("showHatch") === "false" ? false : true
+  );
   showHatch.changed(() => {
-    setParam("showHatch", showHatch);
+    setParam("showHatch", showHatch.checked());
 
     // Show/hide hatch options
     setInputState(hatchColor, showHatch.checked());
@@ -581,6 +584,7 @@ function getParam(id) {
 function setParam(key, value) {
   const url = new URL(window.location);
   url.searchParams.set(key, String(value));
+  console.log(String(value));
 
   window.history.pushState({}, "", url);
 }
