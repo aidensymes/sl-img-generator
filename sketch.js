@@ -25,6 +25,8 @@ let hatchRowCount;
 let canvas;
 let readyToRender = false;
 let imgPreview;
+let canvasAspectRatio;
+let canvasBaseWidth;
 
 // Setup
 // ─────────────────────────────────────────────────────────────────────
@@ -54,10 +56,12 @@ async function setup() {
 
   // IMAGE
   imageURL = createInput(
-    "https://images.unsplash.com/photo-1539664030485-a936c7d29c6e?q=80&w=1160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    getParam("imageURL") ??
+      "https://images.unsplash.com/photo-1539664030485-a936c7d29c6e?q=80&w=1160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   );
   imgPreview = createImg(imageURL.value(), "");
   imageURL.changed(() => {
+    setParam("imageURL", imageURL.value());
     imgPreview.elt.src = imageURL.value();
     setButton("render");
   });
@@ -66,6 +70,14 @@ async function setup() {
   // BUTTON
   button = createButton("Render");
   setButton("render");
+
+  resetButton = createButton("Reset to default");
+  resetButton.id("resetButton");
+  resetButton.mousePressed(() => {
+    const url = new URL(window.location);
+    url.search = "";
+    window.location.href = url.toString();
+  });
 
   // HATCH
   function showHideHatchOptions() {
@@ -261,6 +273,7 @@ async function setup() {
 
   // 3. Place buttons inside the div
   button.parent(controls);
+  resetButton.parent(controls);
 
   imageURLLabel.parent(controls);
   imageURL.parent(controls);
@@ -350,6 +363,8 @@ async function setupRender() {
 
   // css transform canvas to make sure it's visible
   const aspectRatio = baseWidth / baseHeight;
+  canvasAspectRatio = aspectRatio;
+  canvasBaseWidth = baseWidth;
   cssScaleCanvas(canvas, aspectRatio, baseWidth);
 
   // brush.load() initialises the library on the current canvas.
@@ -600,6 +615,12 @@ function cssScaleCanvas(canvas, aspectRatio, baseWidth) {
   const scaleFactor = targetWidth / currentWidth;
 
   canvas.style("transform", `scale(${scaleFactor * 0.9})`);
+}
+
+function windowResized() {
+  if (canvasAspectRatio && canvasBaseWidth) {
+    cssScaleCanvas(canvas, canvasAspectRatio, canvasBaseWidth);
+  }
 }
 
 // Create an image if the file is an image.
