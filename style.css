@@ -34,7 +34,6 @@ body {
 }
 
 #controls {
-  max-height: 95%;
   overflow-y: scroll;
   overflow-x: hidden;
   padding: 10px;
@@ -42,6 +41,7 @@ body {
   width: 200px;
   top: 10px;
   left: 10px;
+  bottom: 10px;
   background: #0A140A;
   border: 1px solid;
   display: flex;
@@ -91,4 +91,10 @@ button {
   border-radius: 5px;
   border: none;
   padding: 10px 0;
+}
+
+#resetButton {
+  background-color: #2D372D;
+  color: #C8C8BE;
+  padding: 2px 0;
 }
