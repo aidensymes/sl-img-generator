@@ -579,12 +579,21 @@ function getParam(id) {
 }
 
 function setParam(param) {
-  const params = new URLSearchParams(window.location.search);
-  params.set("Object.keys({ param })[0]", param);
+//   const params = new URLSearchParams(window.location.search);
+//   params.set(Object.keys({ param })[0], param);
 
-  window.history.pushState(
-    {},
-    "",
-    `${window.location.pathname}?${params.toString()}`
-  );
+//   window.history.pushState(
+//     {},
+//     "",
+//     `${window.location.pathname}?${params.toString()}`
+//   );
+
+//   // 1. Get the current URL
+  const url = new URL(window.location);
+
+  // 2. Update or add a parameter
+  url.searchParams.set("name", "value");
+
+  // 3. Update the address bar without reloading
+  window.history.pushState({}, "", url);
 }
