@@ -1,0 +1,94 @@
+html,
+body {
+  height: 100%;
+  font-family: monospace;
+}
+
+body {
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: conic-gradient(
+    #ffffff 90deg,
+    #F5F5F5 90deg 180deg,
+    #ffffff 180deg 270deg,
+    #F5F5F5 270deg
+  );
+  background-size: 20px 20px;
+}
+
+#mainCanvas {
+  position: absolute;
+  z-index: 0;
+  margin: auto;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+}
+
+#p5_loading {
+  display: none;
+}
+
+#controls {
+  max-height: 95%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding: 10px;
+  position: fixed;
+  width: 200px;
+  top: 10px;
+  left: 10px;
+  background: #0A140A;
+  border: 1px solid;
+  display: flex;
+  flex-direction: column;
+  color: #F0F0EC;
+  gap: 0;
+  border-radius: 5px;
+  margin: 0;
+}
+
+p {
+  margin: 10px 0 5px 0;
+}
+
+button,
+input,
+select {
+  margin: 0 0 5px 0;
+  font-family: monospace;
+  accent-color: #4790DD;
+}
+
+div {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #3C483C;
+}
+
+span {
+  padding-left: 5px;
+  text-transform: uppercase;
+  letter-spacing: 10%;
+}
+
+input[type="color"] {
+  min-height: 50px;
+  width: 100%;
+}
+
+img {
+  border-radius: 5px;
+}
+
+button {
+  text-transform: uppercase;
+  letter-spacing: 10%;
+  border-radius: 5px;
+  border: none;
+  padding: 10px 0;
+}
