@@ -67,7 +67,7 @@ async function setup() {
   setButton("render");
 
   // HATCH
-  showHatch = createCheckbox("Show Hatching?", getParam("showHatch") ?? true);
+  showHatch = createCheckbox("Show Hatching?", getParam("showHatch") === 'false' ? false : true);
   showHatch.changed(() => {
     setParam("showHatch", showHatch);
 
@@ -580,7 +580,7 @@ function getParam(id) {
 
 function setParam(key, value) {
   const url = new URL(window.location);
-  url.searchParams.set(key, value);
+  url.searchParams.set(key, String(value));
 
   window.history.pushState({}, "", url);
 }
